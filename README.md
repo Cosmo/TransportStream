@@ -1,4 +1,6 @@
-# TransportStream
+# MPEG Transport Stream Tools
+
+
 
 ## Transport Stream
 
@@ -31,7 +33,7 @@ ProgramAssociationTable(_ bytes: [UInt8])
 ### Conditional Access Table
 
 ```swift
-Conditional Access Table(_ bytes: [UInt8])
+ConditionalAccessTable(_ bytes: [UInt8])
 ```
 
 ### Network Information Table

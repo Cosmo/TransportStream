@@ -29,20 +29,19 @@ struct Demultiplexer {
         
     }
     
-    mutating func parse() {
-        let url = Bundle.main.url(forResource: "alsobitlonger", withExtension: "ts")
-        guard let dataUrl = url, let data = try? Data(contentsOf: dataUrl) else {
+    mutating func parse(url: URL) {
+        guard let data = try? Data(contentsOf: url) else {
             print("Could not load file.")
             return
         }
         let bytes = [UInt8](data)
         var binary = Binary(bytes: bytes)
         
-        print("Let's go.")
+        print("Loading packets...")
         
         do {
-            while let subBytes = try? binary.readBytes(PTSPacket.length) {
-                let packet = try PTSPacket(subBytes)
+            while let packetBytes = try? binary.readBytes(PTSPacket.length) {
+                let packet = try PTSPacket(packetBytes)
                 append(packet: packet)
                 delegate?.didParsePacket(packet: packet)
             }
@@ -64,7 +63,6 @@ struct Demultiplexer {
             processPreviousPackets(withPid: pid)
         }
         
-        /// TODO: Add packets only if the continuity counter checks out
         rawPackets[pid, default: []].append(packet)
     }
     
@@ -75,8 +73,6 @@ struct Demultiplexer {
         }
         
         if !packetsOfPid.contains(where: { $0.payloadUnitStartIndicator }) {
-            // print("This is gone! --> \(String(pid, radix: 16, uppercase: true))")
-            // let lol = packetsOfPid.compactMap{ $0.payloadData }.joined().map{ String($0, radix: 16, uppercase: true) }
             rawPackets[pid] = []
             return
         }

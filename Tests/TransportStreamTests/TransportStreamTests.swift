@@ -6,7 +6,7 @@ final class TransportStreamTests: XCTestCase {
         // This is an example of a functional test case.
         // Use XCTAssert and related functions to verify your tests produce the correct
         // results.
-        XCTAssertEqual(TransportStream().text, "Hello, World!")
+        XCTAssertEqual(try PartialTransportStreamPacket([0x00]).continuityCounter, 0)
     }
 
     static var allTests = [
